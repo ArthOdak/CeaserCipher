@@ -2,19 +2,91 @@
 using namespace std;
 
 bool check_if_present(string a,char ch){
-    for(int i=0;i<a.length();i+=){
+    for(int i=0;i<a.length();i++){
         char j = a.at(i);
         if(j==ch){
             return true;
         }
     }
-    return False;
+    return false;
 }
 
-int encryptInPlayfairCipher(string key, string pt){
-    string ppt[100];
-    for(int i=0;)
+string encryptInPlayfairCipher(char a, char b, char mat[5][5]){
+    string ans;
+    int x1,x2,y1,y2;
+    int flag=0;
+    for(int i=0;i<5;i++){
+        if(flag==2){
+            break;
+        }
+        for(int j=0;j<5;j++){
+            if(mat[i][j] == a){
+                x1 = i;
+                y1 = j;
+                flag++;
+            }
+            if(mat[i][j] == b){
+                x2 = i;
+                y2 = j;
+                flag++;
+            }
+        }
+    }
+    if(x1==x2) // SAME ROWS
+    {
+        ans.push_back(mat[x1][(y1+1)%5]);
+        ans.push_back(mat[x2][(y2+1)%5]);
+        return ans;
+    }
+    if(y1==y2) // SAME COLUMNS
+    {
+        ans.push_back(mat[(x1+1)%5][y1]);
+        ans.push_back(mat[(x2+1)%5][y2]);
+        return ans;
+    }
+    ans.push_back(mat[x1][y2]);
+    ans.push_back(mat[x2][y1]);
+    return ans;
 }
+
+string decryptInPlayfairCipher(char a, char b, char mat[5][5]){
+    string ans;
+    int x1,x2,y1,y2;
+    int flag=0;
+    for(int i=0;i<5;i++){
+        if(flag==2){
+            break;
+        }
+        for(int j=0;j<5;j++){
+            if(mat[i][j] == a){
+                x1 = i;
+                y1 = j;
+                flag++;
+            }
+            if(mat[i][j] == b){
+                x2 = i;
+                y2 = j;
+                flag++;
+            }
+        }
+    }
+    if(x1==x2) // SAME ROWS
+    {
+        ans.push_back(mat[x1][(y1-1)%5]);
+        ans.push_back(mat[x2][(y2-1)%5]);
+        return ans;
+    }
+    if(y1==y2) // SAME COLUMNS
+    {
+        ans.push_back(mat[(x1-1)%5][y1]);
+        ans.push_back(mat[(x2-1)%5][y2]);
+        return ans;
+    }
+    ans.push_back(mat[x1][y2]);
+    ans.push_back(mat[x2][y1]);
+    return ans;
+}
+
 int main(){
     cout<<"-----WELCOME TO PLAYFAIR CIPHER-----";
     cout<<"Enter the key:";
@@ -27,7 +99,7 @@ int main(){
     
     for(int j=0; j<key.length();j++){
         if(!check_if_present(key_matrix,key.at(j))){
-            key_matrix.push_back(key.at(j))
+            key_matrix.push_back(key.at(j));
         }
     }
     
@@ -39,26 +111,41 @@ int main(){
         }
         else{
             if(!check_if_present(key_matrix,q)){
-                key_matrix.push_back(q)
-            }
+                key_matrix.push_back(q);
         }
     }
-    
-    string array_matrix[5][5];
-    count=0;
+    }
+    char array_matrix[5][5];
+    int count=0;
     for(int i=0;i<5;i++){
         for(int j=0;j<5;j++)    
             array_matrix[i][j] = key_matrix.at(count);
             count++;
     }
     
-    char array_matrix[5][5];
-    for(int i=0; ){
-        
+    string et;
+    for(int i=0;i<pt.length();i=i+2){
+        char pair[2];
+        pair[0] = pt.at(i);
+        if(pt.length()%2!=0 && i==pt.length()-1){
+            pair[1] = 'x';
+            continue;
+        }
+        pair[1]=pt.at(i+1);
+        et.append(encryptInPlayfairCipher(pair[0],pair[1],array_matrix));
     }
     
-    et = encryptInPlayfairCipher(key, pt);
+    string dt;
+    for(int i=0;i<et.length();i=i+2){
+        char pair[2];
+        pair[0] = pt.at(i);
+        if(pt.length()%2!=0 && i==pt.length()-1){
+            pair[1] = 'x';
+            continue;
+        }
+        pair[1]=pt.at(i+1);
+        dt.append(decryptInPlayfairCipher(pair[0],pair[1],array_matrix));
+    }
     cout<<"Encrypted Text: "<<et<<endl;
-    dt = decryptInPlayfairCipher(key, et);
     cout<<"Decrypted Text: "<<dt<<endl;
 }
